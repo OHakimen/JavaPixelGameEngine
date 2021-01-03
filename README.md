@@ -6,3 +6,7 @@ JavaPixelGameEngine is a "Port" of the OLC::PixelGameEngine to java (with some m
 Using the native Java drawing routines it can do loads without needing to install anything
 
 Supports Mouse Input, Keyboard Input, Rendering Images, Rotating, Translating, an even Scaling Stuff
+
+There's one Demo of the game Tetris running on this engine it can be found in :
+
+https://github.com/JheffersonMarques/Tetris
