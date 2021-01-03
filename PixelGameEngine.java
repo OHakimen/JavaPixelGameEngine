@@ -32,10 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*
 Example Implementation :
 
-
 import java.awt.*;
 
-public class Main {
+public class ExampleClass {
     static class Example extends PixelGameEngine{
         public Example(int width, int height, Color bgColor) {
             super("Example", width, height, bgColor);
@@ -45,8 +44,9 @@ public class Main {
         public boolean OnUserCreate() {
             return true;
         }
+        
         @Override
-        public boolean OnUserUpdate() {
+        public boolean OnUserUpdate(float fElapsedTime) {
             return true;
         }
     }
