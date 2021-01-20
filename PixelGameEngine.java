@@ -26,7 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * <b>Hakimen's Game Engine</b>
  *
  * @author Hakimen
- * @version 2.0b
+ * @version 2.1
  */
 
 /*
@@ -82,11 +82,11 @@ public abstract class PixelGameEngine{
     private int ScreenWidth;
     private int ScreenHeight;
 
-    protected boolean b_keys[] = new boolean[256];
+    protected boolean b_keys[] = new boolean[1024];
     protected boolean b_mouse[] = new boolean[6];
 
 
-    private JFrame frame;
+    public JFrame frame;
     private static String title;
     private static boolean isRunning;
     protected Color bgColor;
@@ -104,11 +104,11 @@ public abstract class PixelGameEngine{
          this.ScreenHeight = height;
          this.ScreenWidth = width;
          display = new View();
-         this.frame = new JFrame(title);
-         this.frame.setSize(ScreenWidth,ScreenHeight);
+         frame = new JFrame(title);
+         this.frame.setSize(width,height);
+         this.frame.getContentPane().add(display);
          this.frame.setResizable(false);
          this.frame.setDefaultCloseOperation(3);
-         this.frame.add(display);
          this.frame.setVisible(true);
          display.engine = this;
     }
@@ -166,6 +166,38 @@ public abstract class PixelGameEngine{
         g.setColor(color);
         g.fillRect(x, y, dx, dy);
     }
+    /**
+     * <b>Draws a rounded rectangle</b>
+     * @param x The x position;
+     * @param y The y position;
+     * @param dx The size in the x axis;
+     * @param dy The size in the y axis;
+     * @param arcWidth The Arc's Width;
+     * @param arcHeight The Arc's Height;
+     * @param color The color used to draw the rectangle
+     * @since 2.1
+     * */
+    void DrawRoundedRect(int x,int y,int dx,int dy,int arcWidth,int arcHeight,Color color){
+        g.setColor(color);
+        g.drawRoundRect(x, y, dx, dy, arcWidth, arcHeight);
+    }
+    
+    /**
+     * <b>Draws a rounded filled in rectangle</b>
+     * @param x The x position;
+     * @param y The y position;
+     * @param dx The size in the x axis;
+     * @param dy The size in the y axis;
+     * @param arcWidth The Arc's Width;
+     * @param arcHeight The Arc's Height;
+     * @param color The color used to draw the rectangle
+     * @since 2.1
+     * */
+    void FillRoundedRect(int x,int y,int dx,int dy,int arcWidth,int arcHeight,Color color){
+        g.setColor(color);
+        g.fillRoundRect(x, y, dx, dy, arcWidth, arcHeight);
+    }
+    
     /**
      * <b>Draws a Circle</b>
      * @param x The x position;
@@ -332,6 +364,23 @@ public abstract class PixelGameEngine{
             DrawLine( transformedCoords.get(i % vertices)[0], transformedCoords.get(i % vertices)[1],
                     transformedCoords.get(j % vertices)[0], transformedCoords.get(j % vertices)[1], color);
         }
+    }
+    
+    /**
+     * Get the pixel color in the x,y coords off the given image
+     * @param img The BufferedImage;
+     * @param x The x coord of the pixel in the image
+     * @param y The y coord of the pixel in the image
+     * @return The Color of The given pixel
+     * @since 2.1
+     */
+    
+    Color GetPixel(BufferedImage img,int x,int y){
+       int rgb = img.getRGB(x, y);
+       int red = (rgb >> 16) & 0xFF;
+       int green = (rgb >> 8) & 0xFF;
+       int blue = rgb & 0xFF; 
+       return new Color(red,green,blue);
     }
 
     static class View extends Canvas implements Runnable{
