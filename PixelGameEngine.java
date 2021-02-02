@@ -1,4 +1,3 @@
-package com.hakimen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,7 +40,8 @@ modification, are permitted provided that the following conditions are met:
  * <b>Hakimen's Game Engine</b>
  *
  * @author Hakimen
- * @version 2.2
+ * @portfrom olc::PixelGameEngine (by Javidx9)
+ * @version 2.3
  */
 
 /*
@@ -49,8 +49,8 @@ Example Implementation :
 import java.awt.*;
 public class ExampleClass {
     static class Example extends PixelGameEngine{
-        public Example(String title,int width, int height,int scaleX,int scaleY) {
-            super("Example", width, height, scaleX, scaleY);
+        public Example(String title,int maxFPS,int width, int height,int scaleX,int scaleY) {
+            super("Example",maxFPS, width, height, scaleX, scaleY);
         }
         @Override
         public boolean OnUserCreate() {
@@ -63,7 +63,7 @@ public class ExampleClass {
         }
     }
     public static void main(String[] args) {
-        Example ex = new Example("Example Title",800,600,2,2);
+        Example ex = new Example("Example Title",maxFPS,800,600,2,2);
         ex.start();
     }
 }
@@ -102,20 +102,20 @@ public abstract class PixelGameEngine {
     private int mouseY;
     public int nScrollDir;
 
-enum MouseState {
-    NULL(0),
-    BUTTON_1(1),
-    BUTTON_2(2),
-    BUTTON_3(3),
-    BUTTON_4(4),
-    BUTTON_5(5);
+    enum MouseState {
+        NULL(0),
+        BUTTON_1(1),
+        BUTTON_2(2),
+        BUTTON_3(3),
+        BUTTON_4(4),
+        BUTTON_5(5);
 
-    int btn;
+        int btn;
 
-    MouseState(int i) {
-        this.btn = i;
+        MouseState(int i) {
+            this.btn = i;
+        }
     }
-}
 
     private final int ScreenWidth;
     private final int ScreenHeight;
@@ -130,7 +130,7 @@ enum MouseState {
     private static boolean isRunning;
     protected static int fps;
     static Graphics2D g;
-
+    protected static int maxFPS;
     public abstract boolean OnUserCreate();
 
     public abstract boolean OnUserUpdate(float fElapsedTime);
@@ -141,7 +141,8 @@ enum MouseState {
 
     View display;
 
-    public PixelGameEngine(String sTitle, int width, int height, int scaleX, int scaleY) {
+    public PixelGameEngine(String sTitle,int maxFPS, int width, int height, int scaleX, int scaleY) {
+        this.maxFPS = maxFPS;
         title = sTitle;
         title = "JavaPixelGameEngine (by Hakimen) " + title;
         this.scaleX = scaleX;
@@ -205,6 +206,10 @@ enum MouseState {
         g.setColor(color);
         g.drawRect(x, y, dx, dy);
     }
+    void DrawRect(float x,float y,float dx,float dy,Color color) {
+        g.setColor(color);
+        g.drawRect((int)x, (int)y, (int)dx, (int)dy);
+    }
 
     /**
      * <b>Draws a filled in rectangle</b>
@@ -219,6 +224,10 @@ enum MouseState {
     void FillRect(int x, int y, int dx, int dy, Color color) {
         g.setColor(color);
         g.fillRect(x, y, dx, dy);
+    }
+    void FillRect(float x,float y,float dx,float dy,Color color) {
+        g.setColor(color);
+        g.fillRect((int)x, (int)y, (int)dx, (int)dy);
     }
 
     /**
@@ -237,6 +246,10 @@ enum MouseState {
         g.setColor(color);
         g.drawRoundRect(x, y, dx, dy, arcWidth, arcHeight);
     }
+    void DrawRoundedRect(float x, float y, float dx, float dy, float arcWidth, float arcHeight, Color color) {
+        g.setColor(color);
+        g.drawRoundRect((int)x, (int)y, (int)dx, (int)dy, (int)arcWidth, (int)arcHeight);
+    }
 
     /**
      * <b>Draws a rounded filled in rectangle</b>
@@ -254,6 +267,10 @@ enum MouseState {
         g.setColor(color);
         g.fillRoundRect(x, y, dx, dy, arcWidth, arcHeight);
     }
+    void FillRoundedRect(float x, float y, float dx, float dy, float arcWidth, float arcHeight, Color color) {
+        g.setColor(color);
+        g.fillRoundRect((int)x, (int)y, (int)dx, (int)dy, (int)arcWidth, (int)arcHeight);
+    }
 
     /**
      * <b>Draws a Circle</b>
@@ -269,6 +286,11 @@ enum MouseState {
         g.drawOval(x, y, radius, radius);
     }
 
+    void DrawCircle(float x, float y, float radius, Color color) {
+        g.setColor(color);
+        g.drawOval((int)x, (int)y, (int)radius, (int)radius);
+    }
+
     /**
      * <b>Draws a filled in Circle</b>
      *
@@ -281,6 +303,10 @@ enum MouseState {
     void FillCircle(int x, int y, int radius, Color color) {
         g.setColor(color);
         g.fillOval(x, y, radius, radius);
+    }
+    void FillCircle(float x, float y, float radius, Color color) {
+        g.setColor(color);
+        g.fillOval((int)x, (int)y, (int)radius, (int)radius);
     }
 
     /**
@@ -297,6 +323,10 @@ enum MouseState {
         g.setColor(color);
         g.drawOval(x, y, dx, dy);
     }
+    void DrawOval(float x, float y, float dx, float dy, Color color) {
+        g.setColor(color);
+        g.drawOval((int)x, (int)y, (int)dx, (int)dy);
+    }
 
     /**
      * <b>Draws a filled in Oval</b>
@@ -311,6 +341,10 @@ enum MouseState {
     void FillOval(int x, int y, int dx, int dy, Color color) {
         g.setColor(color);
         g.fillOval(x, y, dx, dy);
+    }
+    void FillOval(float x, float y, float dx, float dy, Color color) {
+        g.setColor(color);
+        g.fillOval((int)x, (int)y, (int)dx, (int)dy);
     }
 
     /**
@@ -353,6 +387,9 @@ enum MouseState {
     void DrawSprite(int x, int y, Sprite img) {
         g.drawImage(img.img,x,y,null);
     }
+    void DrawSprite(float x, float y, Sprite img) {
+        g.drawImage(img.img,(int)x,(int)y,null);
+    }
 
     /**
      * <b>Gets an part of a image</b>
@@ -380,6 +417,10 @@ enum MouseState {
         g.setColor(color);
         g.drawLine(x, y, x, y);
     }
+    void DrawPixel(float x, float y, Color color) {
+        g.setColor(color);
+        g.drawLine((int)x, (int)y, (int)x, (int)y);
+    }
 
     /**
      * <b>Draw a Line</b>
@@ -395,6 +436,11 @@ enum MouseState {
         g.setColor(color);
         g.drawLine(startX, startY, endX, endY);
     }
+    void DrawLine(float startX, float startY, float endX, float endY, Color color) {
+        g.setColor(color);
+        g.drawLine((int)startX, (int)startY, (int)endX, (int)endY);
+    }
+
 
     /**
      * <b>Draw a wireframe model</b>
@@ -476,7 +522,7 @@ enum MouseState {
                 tintedSprite.setRGB(i, j, (ax << 24) | (rx << 16) | (gx << 8) | (bx));
             }
         }
-       return new Sprite(tintedSprite);
+        return new Sprite(tintedSprite);
     }
 
     static private final float map(float value, float istart, float istop, float ostart, float ostop) {
@@ -488,122 +534,134 @@ enum MouseState {
     }
 
 
-static class View extends Canvas implements Runnable {
+    static class View extends Canvas implements Runnable {
 
-    private long scrollResetTimer;
+        private long scrollResetTimer;
 
-    public View() {
-        setFocusable(true);
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent keyEvent) {
-                engine.b_keys[keyEvent.getKeyCode()] = true;
-            }
+        public View() {
+            setFocusable(true);
+            addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent keyEvent) {
+                    engine.b_keys[keyEvent.getKeyCode()] = true;
+                }
 
-            public void keyReleased(KeyEvent keyEvent) {
-                engine.b_keys[keyEvent.getKeyCode()] = false;
-            }
-        });
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent mouseEvent) {
-                engine.b_mouse[mouseEvent.getButton()] = true;
-            }
+                public void keyReleased(KeyEvent keyEvent) {
+                    engine.b_keys[keyEvent.getKeyCode()] = false;
+                }
+            });
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent mouseEvent) {
+                    engine.b_mouse[mouseEvent.getButton()] = true;
+                }
 
-            @Override
-            public void mouseReleased(MouseEvent mouseEvent) {
-                engine.b_mouse[mouseEvent.getButton()] = false;
-            }
-        });
-        addMouseMotionListener(new MouseAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent mouseEvent) {
-                engine.mouseX = mouseEvent.getX() / engine.scaleX;
-                engine.mouseY = mouseEvent.getY() / engine.scaleY;
-            }
+                @Override
+                public void mouseReleased(MouseEvent mouseEvent) {
+                    engine.b_mouse[mouseEvent.getButton()] = false;
+                }
+            });
+            addMouseMotionListener(new MouseAdapter() {
+                @Override
+                public void mouseMoved(MouseEvent mouseEvent) {
+                    engine.mouseX = mouseEvent.getX() / engine.scaleX;
+                    engine.mouseY = mouseEvent.getY() / engine.scaleY;
+                }
 
-            @Override
-            public void mouseDragged(MouseEvent mouseEvent) {
-                engine.mouseX = mouseEvent.getX() / engine.scaleX;
-                engine.mouseY = mouseEvent.getY() / engine.scaleY;
-            }
-        });
-        addMouseWheelListener(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) {
-                engine.nScrollDir = mouseWheelEvent.getWheelRotation();
-                scrollResetTimer = System.currentTimeMillis();
-            }
-        });
-    }
-
-    private Thread thread;
-    PixelGameEngine engine;
-
-    public synchronized void start() {
-        isRunning = true;
-        this.thread = new Thread(this, "Render");
-        this.thread.start();
-    }
-
-    public synchronized void stop() {
-        isRunning = false;
-        try {
-            this.thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+                @Override
+                public void mouseDragged(MouseEvent mouseEvent) {
+                    engine.mouseX = mouseEvent.getX() / engine.scaleX;
+                    engine.mouseY = mouseEvent.getY() / engine.scaleY;
+                }
+            });
+            addMouseWheelListener(new MouseWheelListener() {
+                @Override
+                public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) {
+                    engine.nScrollDir = mouseWheelEvent.getWheelRotation();
+                    scrollResetTimer = System.currentTimeMillis();
+                }
+            });
         }
-    }
 
-    private void render(double delta) {
-        BufferStrategy bs = this.getBufferStrategy();
-        if (bs == null) {
-            this.createBufferStrategy(4);
-            return;
+        private Thread thread;
+        PixelGameEngine engine;
+
+        public synchronized void start() {
+            isRunning = true;
+            this.thread = new Thread(this, "Render");
+            this.thread.start();
         }
-        if (System.currentTimeMillis() - scrollResetTimer > 100) {
-            engine.nScrollDir = 0;
+
+        public synchronized void stop() {
+            isRunning = false;
+            try {
+                this.thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        engine.g = (Graphics2D) bs.getDrawGraphics();
-        g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
-        g.scale(engine.scaleX, engine.scaleY);
-        g.setFont(new Font("Consolas", 1, 8));
-        if (!engine.OnUserUpdate((float) delta)) {
-            engine.OnUserDestroy();
+        private void render(float delta) {
+            BufferStrategy bs = this.getBufferStrategy();
+            if (bs == null) {
+                this.createBufferStrategy(4);
+                return;
+            }
+            if (System.currentTimeMillis() - scrollResetTimer > 100) {
+                engine.nScrollDir = 0;
+            }
+
+            engine.g = (Graphics2D) bs.getDrawGraphics();
+            g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
+            g.scale(engine.scaleX, engine.scaleY);
+            g.setFont(new Font("Consolas", 1, 8));
+            if (!engine.OnUserUpdate((float)delta)) {
+                engine.OnUserDestroy();
+                stop();
+            }
+            g.dispose();
+            bs.show();
+        }
+
+        @Override
+        public void run() {
+            long lastTime = System.nanoTime();
+            long currentTime = System.currentTimeMillis();
+            final double ns = 1000000000.0 / 60f;
+            double delta = 0;
+            int frames = 0;
+
+            long renderLastTime=System.nanoTime();
+            double amtOfRenders =engine.maxFPS;//MAX FPS
+            double renderNs=1000000000/amtOfRenders;
+            double renderDelta = 0;
+
+            if (!engine.OnUserCreate()) {
+                stop();
+            }
+            while (isRunning) {
+                long now = System.nanoTime();
+                delta += (now - lastTime) / ns;
+                lastTime = now;
+
+                while (delta >= 1) {
+                    delta--;
+                }
+                now = System.nanoTime();
+                renderDelta += (now - renderLastTime) / renderNs;
+                renderLastTime = now;
+                while(isRunning && renderDelta >= 1){
+                    render((float)delta);
+                    frames++;
+                    renderDelta--;
+                }
+                if (System.currentTimeMillis() - currentTime > 1000) {
+                    currentTime += 1000;
+                    fps = frames;
+                    engine.frame.setTitle(title + " | FPS :" + frames);
+                    frames = 0;
+                }
+            }
             stop();
         }
-        g.dispose();
-        bs.show();
     }
-
-    @Override
-    public void run() {
-        long lastTime = System.currentTimeMillis();
-        long currentTime = System.currentTimeMillis();
-        final double ns = 1000000000.0 / 60;
-        double delta = 0;
-        int frames = 0;
-
-        if (!engine.OnUserCreate()) {
-            stop();
-        }
-        while (isRunning) {
-            long now = System.nanoTime();
-            delta += (now - lastTime) / ns;
-            lastTime = now;
-            while (delta >= 1) {
-                delta--;
-            }
-            render(delta);
-            frames++;
-            if (System.currentTimeMillis() - currentTime > 1000) {
-                currentTime += 1000;
-                fps = frames;
-                engine.frame.setTitle(title + " | FPS :" + frames);
-                frames = 0;
-            }
-        }
-        stop();
-    }
-}
 }
