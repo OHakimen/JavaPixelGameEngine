@@ -1,11 +1,19 @@
+package com.hakimen;
+
+import com.sun.imageio.plugins.common.InputStreamAdapter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import javax.imageio.ImageIO;
 
 /*
@@ -49,8 +57,8 @@ Example Implementation :
 import java.awt.*;
 public class ExampleClass {
     static class Example extends PixelGameEngine{
-        public Example(String title,int maxFPS,int width, int height,int scaleX,int scaleY) {
-            super("Example",maxFPS, width, height, scaleX, scaleY);
+        public Example(String title,int width, int height,int scaleX,int scaleY) {
+            super("Example", width, height, scaleX, scaleY);
         }
         @Override
         public boolean OnUserCreate() {
@@ -63,14 +71,14 @@ public class ExampleClass {
         }
     }
     public static void main(String[] args) {
-        Example ex = new Example("Example Title",maxFPS,800,600,2,2);
+        Example ex = new Example("Example Title",800,600,2,2);
         ex.start();
     }
 }
  */
 public abstract class PixelGameEngine {
 
-    static class Sprite {
+    public static class Sprite {
         public BufferedImage img;
 
         int sizeX;
@@ -94,47 +102,38 @@ public abstract class PixelGameEngine {
             return new Sprite(path);
         }
     }
-
-
-
-
     private int mouseX;
     private int mouseY;
-    public int nScrollDir;
-
-    enum MouseState {
-        NULL(0),
-        BUTTON_1(1),
-        BUTTON_2(2),
-        BUTTON_3(3),
-        BUTTON_4(4),
-        BUTTON_5(5);
-
-        int btn;
-
-        MouseState(int i) {
-            this.btn = i;
-        }
-    }
+    private int nScrollDir;
 
     private final int ScreenWidth;
     private final int ScreenHeight;
     private final int scaleX;
     private final int scaleY;
 
-    protected boolean b_keys[] = new boolean[1024];
-    protected boolean b_mouse[] = new boolean[6];
-
+    private boolean b_keys[] = new boolean[1024];
+    private boolean b_mouse[] = new boolean[6];
     public JFrame frame;
     private static String title;
     private static boolean isRunning;
     protected static int fps;
     static Graphics2D g;
     protected static int maxFPS;
+
+    int GetMouseScroll(){
+        return nScrollDir;
+    }
+
+    boolean GetKey(int i){
+        return b_keys[i];
+    }
+
+    boolean GetMouse(int i){
+        return b_mouse[i];
+    }
+
     public abstract boolean OnUserCreate();
-
     public abstract boolean OnUserUpdate(float fElapsedTime);
-
     public boolean OnUserDestroy() {
         return true;
     }
@@ -151,8 +150,28 @@ public abstract class PixelGameEngine {
         this.ScreenWidth = (width) * this.scaleX;
         display = new View();
         frame = new JFrame(title);
+        frame.setLayout(new CardLayout());
+        frame.add(display,"Hee",0);
         this.frame.setSize(ScreenWidth, ScreenHeight);
-        this.frame.getContentPane().add(display);
+        this.frame.setLocationRelativeTo(null);
+        this.frame.setResizable(false);
+        this.frame.setDefaultCloseOperation(3);
+        this.frame.setVisible(true);
+        display.engine = this;
+    }
+    public PixelGameEngine(String sTitle, int width, int height, int scaleX, int scaleY) {
+        this.maxFPS = Integer.MAX_VALUE;
+        title = sTitle;
+        title = "JavaPixelGameEngine (by Hakimen) " + title;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+        this.ScreenHeight = (height) * this.scaleY;
+        this.ScreenWidth = (width) * this.scaleX;
+        display = new View();
+        frame = new JFrame(title);
+        frame.setLayout(new CardLayout());
+        frame.add(display,"Hee",0);
+        this.frame.setSize(ScreenWidth, ScreenHeight);
         this.frame.setLocationRelativeTo(null);
         this.frame.setResizable(false);
         this.frame.setDefaultCloseOperation(3);
@@ -356,9 +375,9 @@ public abstract class PixelGameEngine {
      * @param s     The String to be Drew
      * @since 1.0
      */
-    void DrawString(int x, int y, Color color, String s) {
+    void DrawString(int x, int y, Color color, Object s) {
         g.setColor(color);
-        g.drawString(s, x, y + 10);
+        g.drawString(s.toString(), x, y + 10);
     }
 
     /**
@@ -545,7 +564,6 @@ public abstract class PixelGameEngine {
                 public void keyPressed(KeyEvent keyEvent) {
                     engine.b_keys[keyEvent.getKeyCode()] = true;
                 }
-
                 public void keyReleased(KeyEvent keyEvent) {
                     engine.b_keys[keyEvent.getKeyCode()] = false;
                 }
@@ -600,7 +618,7 @@ public abstract class PixelGameEngine {
                 e.printStackTrace();
             }
         }
-        private void render(float delta) {
+        private void render(float delta){
             BufferStrategy bs = this.getBufferStrategy();
             if (bs == null) {
                 this.createBufferStrategy(4);
@@ -613,13 +631,13 @@ public abstract class PixelGameEngine {
             engine.g = (Graphics2D) bs.getDrawGraphics();
             g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
             g.scale(engine.scaleX, engine.scaleY);
-            g.setFont(new Font("Consolas", 1, 8));
+            g.setFont(new Font("Consolas",1,8));
             if (!engine.OnUserUpdate((float)delta)) {
                 engine.OnUserDestroy();
+                g.dispose();
+                bs.show();
                 stop();
             }
-            g.dispose();
-            bs.show();
         }
 
         @Override
@@ -631,7 +649,7 @@ public abstract class PixelGameEngine {
             int frames = 0;
 
             long renderLastTime=System.nanoTime();
-            double amtOfRenders =engine.maxFPS;//MAX FPS
+            double amtOfRenders = engine.maxFPS;//MAX FPS
             double renderNs=1000000000/amtOfRenders;
             double renderDelta = 0;
 
@@ -653,13 +671,14 @@ public abstract class PixelGameEngine {
                     render((float)delta);
                     frames++;
                     renderDelta--;
+                    if (System.currentTimeMillis() - currentTime > 1000) {
+                        currentTime += 1000;
+                        fps = frames;
+                        engine.frame.setTitle(title + " | FPS :" + frames);
+                        frames = 0;
+                    }
                 }
-                if (System.currentTimeMillis() - currentTime > 1000) {
-                    currentTime += 1000;
-                    fps = frames;
-                    engine.frame.setTitle(title + " | FPS :" + frames);
-                    frames = 0;
-                }
+
             }
             stop();
         }
