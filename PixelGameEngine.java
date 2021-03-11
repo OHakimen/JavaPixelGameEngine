@@ -1,7 +1,4 @@
 package com.hakimen;
-
-import com.sun.imageio.plugins.common.InputStreamAdapter;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -634,10 +631,10 @@ public abstract class PixelGameEngine {
             g.setFont(new Font("Consolas",1,8));
             if (!engine.OnUserUpdate((float)delta)) {
                 engine.OnUserDestroy();
-                g.dispose();
-                bs.show();
                 stop();
             }
+            g.dispose();
+            bs.show();
         }
 
         @Override
