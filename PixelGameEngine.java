@@ -196,15 +196,15 @@ public abstract class PixelGameEngine {
         return this.ScreenWidth / scaleX;
     }
 
-    void Clear(Color color) {
+    public void Clear(Color color) {
         FillRect(0, 0, ScreenWidth(), ScreenHeight(), color);
     }
 
-    void Translate(int dx, int dy) {
+    public void Translate(int dx, int dy) {
         g.translate(dx, dy);
     }
 
-    void Rotate(int r) {
+    public void Rotate(int r) {
         g.rotate(r);
     }
 
@@ -218,11 +218,11 @@ public abstract class PixelGameEngine {
      * @param color The color used to draw the rectangle
      * @since 1.0
      */
-    void DrawRect(int x, int y, int dx, int dy, Color color) {
+    public void DrawRect(int x, int y, int dx, int dy, Color color) {
         g.setColor(color);
         g.drawRect(x, y, dx, dy);
     }
-    void DrawRect(float x,float y,float dx,float dy,Color color) {
+    public void DrawRect(float x,float y,float dx,float dy,Color color) {
         g.setColor(color);
         g.drawRect((int)x, (int)y, (int)dx, (int)dy);
     }
@@ -237,11 +237,11 @@ public abstract class PixelGameEngine {
      * @param color The color used to draw the rectangle
      * @since 1.0
      */
-    void FillRect(int x, int y, int dx, int dy, Color color) {
+    public void FillRect(int x, int y, int dx, int dy, Color color) {
         g.setColor(color);
         g.fillRect(x, y, dx, dy);
     }
-    void FillRect(float x,float y,float dx,float dy,Color color) {
+    public void FillRect(float x,float y,float dx,float dy,Color color) {
         g.setColor(color);
         g.fillRect((int)x, (int)y, (int)dx, (int)dy);
     }
@@ -258,11 +258,11 @@ public abstract class PixelGameEngine {
      * @param color     The color used to draw the rectangle
      * @since 2.1
      */
-    void DrawRoundedRect(int x, int y, int dx, int dy, int arcWidth, int arcHeight, Color color) {
+    public void DrawRoundedRect(int x, int y, int dx, int dy, int arcWidth, int arcHeight, Color color) {
         g.setColor(color);
         g.drawRoundRect(x, y, dx, dy, arcWidth, arcHeight);
     }
-    void DrawRoundedRect(float x, float y, float dx, float dy, float arcWidth, float arcHeight, Color color) {
+    public void DrawRoundedRect(float x, float y, float dx, float dy, float arcWidth, float arcHeight, Color color) {
         g.setColor(color);
         g.drawRoundRect((int)x, (int)y, (int)dx, (int)dy, (int)arcWidth, (int)arcHeight);
     }
@@ -279,11 +279,11 @@ public abstract class PixelGameEngine {
      * @param color     The color used to draw the rectangle
      * @since 2.1
      */
-    void FillRoundedRect(int x, int y, int dx, int dy, int arcWidth, int arcHeight, Color color) {
+    public void FillRoundedRect(int x, int y, int dx, int dy, int arcWidth, int arcHeight, Color color) {
         g.setColor(color);
         g.fillRoundRect(x, y, dx, dy, arcWidth, arcHeight);
     }
-    void FillRoundedRect(float x, float y, float dx, float dy, float arcWidth, float arcHeight, Color color) {
+    public void FillRoundedRect(float x, float y, float dx, float dy, float arcWidth, float arcHeight, Color color) {
         g.setColor(color);
         g.fillRoundRect((int)x, (int)y, (int)dx, (int)dy, (int)arcWidth, (int)arcHeight);
     }
@@ -297,12 +297,12 @@ public abstract class PixelGameEngine {
      * @param color  The color used to draw the Circle
      * @since 1.0
      */
-    void DrawCircle(int x, int y, int radius, Color color) {
+    public void DrawCircle(int x, int y, int radius, Color color) {
         g.setColor(color);
         g.drawOval(x, y, radius, radius);
     }
 
-    void DrawCircle(float x, float y, float radius, Color color) {
+    public void DrawCircle(float x, float y, float radius, Color color) {
         g.setColor(color);
         g.drawOval((int)x, (int)y, (int)radius, (int)radius);
     }
@@ -316,11 +316,11 @@ public abstract class PixelGameEngine {
      * @param color  The color used to draw the Circle
      * @since 1.0
      */
-    void FillCircle(int x, int y, int radius, Color color) {
+    public void FillCircle(int x, int y, int radius, Color color) {
         g.setColor(color);
         g.fillOval(x, y, radius, radius);
     }
-    void FillCircle(float x, float y, float radius, Color color) {
+    public void FillCircle(float x, float y, float radius, Color color) {
         g.setColor(color);
         g.fillOval((int)x, (int)y, (int)radius, (int)radius);
     }
@@ -335,11 +335,11 @@ public abstract class PixelGameEngine {
      * @param color The color used to draw the Circle
      * @since 1.0
      */
-    void DrawOval(int x, int y, int dx, int dy, Color color) {
+    public void DrawOval(int x, int y, int dx, int dy, Color color) {
         g.setColor(color);
         g.drawOval(x, y, dx, dy);
     }
-    void DrawOval(float x, float y, float dx, float dy, Color color) {
+    public void DrawOval(float x, float y, float dx, float dy, Color color) {
         g.setColor(color);
         g.drawOval((int)x, (int)y, (int)dx, (int)dy);
     }
@@ -354,11 +354,11 @@ public abstract class PixelGameEngine {
      * @param color The color used to draw the Circle
      * @since 1.0
      */
-    void FillOval(int x, int y, int dx, int dy, Color color) {
+    public void FillOval(int x, int y, int dx, int dy, Color color) {
         g.setColor(color);
         g.fillOval(x, y, dx, dy);
     }
-    void FillOval(float x, float y, float dx, float dy, Color color) {
+    public void FillOval(float x, float y, float dx, float dy, Color color) {
         g.setColor(color);
         g.fillOval((int)x, (int)y, (int)dx, (int)dy);
     }
@@ -372,7 +372,7 @@ public abstract class PixelGameEngine {
      * @param s     The String to be Drew
      * @since 1.0
      */
-    void DrawString(int x, int y, Color color, Object s) {
+    public void DrawString(int x, int y, Color color, Object s) {
         g.setColor(color);
         g.drawString(s.toString(), x, y + 10);
     }
@@ -387,7 +387,7 @@ public abstract class PixelGameEngine {
      * @param data     The data to fill in the template string;
      * @since 1.0
      */
-    void DrawFormattedString(int x, int y, Color color, String template, Object... data) {
+    public void DrawFormattedString(int x, int y, Color color, String template, Object... data) {
         g.setColor(color);
         g.drawString(String.format(template, data), x, y + 10);
     }
@@ -400,10 +400,10 @@ public abstract class PixelGameEngine {
      * @param img The buffered image to draw
      * @since 1.0
      */
-    void DrawSprite(int x, int y, Sprite img) {
+    public void DrawSprite(int x, int y, Sprite img) {
         g.drawImage(img.img,x,y,null);
     }
-    void DrawSprite(float x, float y, Sprite img) {
+    public void DrawSprite(float x, float y, Sprite img) {
         g.drawImage(img.img,(int)x,(int)y,null);
     }
 
@@ -417,7 +417,7 @@ public abstract class PixelGameEngine {
      * @param img     The buffered image to draw
      * @since 1.0
      */
-    Sprite GetPartialSprite(int topX, int topY, int bottomX, int bottomY, Sprite img) {
+    public Sprite GetPartialSprite(int topX, int topY, int bottomX, int bottomY, Sprite img) {
         return new Sprite(img.img.getSubimage(topX, topY, bottomX, bottomY));
     }
 
@@ -429,11 +429,11 @@ public abstract class PixelGameEngine {
      * @param color The color of the pixel
      * @since 1.0
      */
-    void DrawPixel(int x, int y, Color color) {
+    public void DrawPixel(int x, int y, Color color) {
         g.setColor(color);
         g.drawLine(x, y, x, y);
     }
-    void DrawPixel(float x, float y, Color color) {
+    public void DrawPixel(float x, float y, Color color) {
         g.setColor(color);
         g.drawLine((int)x, (int)y, (int)x, (int)y);
     }
@@ -448,11 +448,11 @@ public abstract class PixelGameEngine {
      * @param color  The Color of the line
      * @since 1.0
      */
-    void DrawLine(int startX, int startY, int endX, int endY, Color color) {
+    public void DrawLine(int startX, int startY, int endX, int endY, Color color) {
         g.setColor(color);
         g.drawLine(startX, startY, endX, endY);
     }
-    void DrawLine(float startX, float startY, float endX, float endY, Color color) {
+    public void DrawLine(float startX, float startY, float endX, float endY, Color color) {
         g.setColor(color);
         g.drawLine((int)startX, (int)startY, (int)endX, (int)endY);
     }
@@ -469,7 +469,7 @@ public abstract class PixelGameEngine {
      * @param color       The color for the model
      * @since 1.3
      */
-    void DrawWireframeModel(ArrayList<float[]> modelCoords, int x, int y, float r, int s, Color color) {
+    public void DrawWireframeModel(ArrayList<float[]> modelCoords, int x, int y, float r, int s, Color color) {
         ArrayList<float[]> transformedCoords = new ArrayList<>();
         int vertices = modelCoords.size();
         //Rotate
@@ -506,7 +506,7 @@ public abstract class PixelGameEngine {
      * @return The Color of The given pixel
      * @since 2.1
      */
-    Color GetPixel(Sprite img, int x, int y) {
+    public Color GetPixel(Sprite img, int x, int y) {
         int rgb = img.img.getRGB(x, y);
         int red = (rgb >> 16) & 0xFF;
         int green = (rgb >> 8) & 0xFF;
