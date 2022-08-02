@@ -2,6 +2,7 @@ package com.hakimen;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -110,22 +111,28 @@ public abstract class PixelGameEngine {
 
     private boolean b_keys[] = new boolean[1024];
     private boolean b_mouse[] = new boolean[6];
+    private char lastKey = ' ';
     public JFrame frame;
     private static String title;
     private static boolean isRunning;
     protected static int fps;
     static Graphics2D g;
     protected static int maxFPS;
+    private Font engineFont = new Font("Consolas",1,8);
 
-    int GetMouseScroll(){
+    public int GetMouseScroll(){
         return nScrollDir;
     }
 
-    boolean GetKey(int i){
+    public char GetLastCharacter() {
+        return lastKey;
+    }
+
+    public boolean GetKey(int i){
         return b_keys[i];
     }
 
-    boolean GetMouse(int i){
+    public boolean GetMouse(int i){
         return b_mouse[i];
     }
 
@@ -200,12 +207,32 @@ public abstract class PixelGameEngine {
         FillRect(0, 0, ScreenWidth(), ScreenHeight(), color);
     }
 
+    public void ClipArea(Shape s){
+        g.clip(s);
+    }
+
     public void Translate(int dx, int dy) {
         g.translate(dx, dy);
     }
 
     public void Rotate(int r) {
         g.rotate(r);
+    }
+
+    public void AffineTransform(AffineTransform at){
+        g.transform(at);
+    }
+
+    public void SetDefaultFont(Font f){
+        engineFont = f;
+    }
+
+    public void SetFont(Font f){
+        g.setFont(f);
+    }
+
+    public void Shear(int x,int y){
+        g.shear(x,y);
     }
 
     /**
@@ -406,6 +433,12 @@ public abstract class PixelGameEngine {
     public void DrawSprite(float x, float y, Sprite img) {
         g.drawImage(img.img,(int)x,(int)y,null);
     }
+    public void DrawSprite(int x, int y, int width,int height,Sprite img) {
+        g.drawImage(img.img,x,y,width,height,null);
+    }
+    public void DrawSprite(float x, float y,float width,float height, Sprite img) {
+        g.drawImage(img.img,(int)x,(int)y,(int)width,(int)height,null);
+    }
 
     /**
      * <b>Gets an part of a image</b>
@@ -497,6 +530,75 @@ public abstract class PixelGameEngine {
         }
     }
 
+    public void DrawArc(int x,int y,int sizeX,int sizeY,int angleStart, int angleEnd,Color c,Stroke s){
+        g.setColor(c);
+        g.setStroke(s);
+        g.drawArc(x,y,sizeX,sizeY,angleStart,angleEnd);
+        g.setStroke(new BasicStroke());
+    }
+    public void DrawArc(float x,float y,float sizeX,float sizeY,float angleStart, float angleEnd,Color c,Stroke s){
+        g.setColor(c);
+        g.setStroke(s);
+        g.drawArc((int)x,(int)y,(int)sizeX,(int)sizeY,(int)angleStart,(int)angleEnd);
+        g.setStroke(new BasicStroke());
+    }
+
+    public void FillArc(int x,int y,int sizeX,int sizeY,int angleStart, int angleEnd,Color c,Stroke s){
+        g.setColor(c);
+        g.setStroke(s);
+        g.fillArc(x,y,sizeX,sizeY,angleStart,angleEnd);
+        g.setStroke(new BasicStroke());
+    }
+    public void FillArc(float x,float y,float sizeX,float sizeY,float angleStart, float angleEnd,Color c,Stroke s){
+        g.setColor(c);
+        g.setStroke(s);
+        g.fillArc((int)x,(int)y,(int)sizeX,(int)sizeY,(int)angleStart,(int)angleEnd);
+        g.setStroke(new BasicStroke());
+    }
+
+    public void DrawPolygon(Polygon poly, Color c) {
+        g.setColor(c);
+        g.drawPolygon(poly);
+    }
+    public void FillPolygon(Polygon poly, Color c) {
+        g.setColor(c);
+        g.fillPolygon(poly);
+    }
+
+    public void DrawTriangle(Color c,int p1x,int p1y,int p2x,int p2y,int p3x,int p3y){
+        Polygon p = new Polygon();
+        p.addPoint(p1x,p1y);
+        p.addPoint(p3x,p3y);
+        p.addPoint(p2x,p2y);
+        DrawPolygon(p,c);
+    }
+    public void FillTriangle(Color c,int p1x,int p1y,int p2x,int p2y,int p3x,int p3y){
+        Polygon p = new Polygon();
+        p.addPoint(p1x,p1y);
+        p.addPoint(p3x,p3y);
+        p.addPoint(p2x,p2y);
+        FillPolygon(p,c);
+    }
+
+    public void DrawTriangle(Color c,float p1x,float p1y,float p2x,float p2y,float p3x,float p3y){
+        Polygon p = new Polygon();
+        p.addPoint((int)p1x,(int)p1y);
+        p.addPoint((int)p3x,(int)p3y);
+        p.addPoint((int)p2x,(int)p2y);
+        DrawPolygon(p,c);
+    }
+    public void FillTriangle(Color c,float p1x,float p1y,float p2x,float p2y,float p3x,float p3y){
+        Polygon p = new Polygon();
+        p.addPoint((int)p1x,(int)p1y);
+        p.addPoint((int)p3x,(int)p3y);
+        p.addPoint((int)p2x,(int)p2y);
+        FillPolygon(p,c);
+    }
+
+    public void SetHints(RenderingHints.Key key,Object value){
+        g.setRenderingHint(key,value);
+    }
+
     /**
      * Get the pixel color in the x,y coords off the given image
      *
@@ -506,6 +608,10 @@ public abstract class PixelGameEngine {
      * @return The Color of The given pixel
      * @since 2.1
      */
+
+
+
+
     public Color GetPixel(Sprite img, int x, int y) {
         int rgb = img.img.getRGB(x, y);
         int red = (rgb >> 16) & 0xFF;
@@ -541,7 +647,7 @@ public abstract class PixelGameEngine {
         return new Sprite(tintedSprite);
     }
 
-    static private final float map(float value, float istart, float istop, float ostart, float ostop) {
+    static public final float map(float value, float istart, float istop, float ostart, float ostop) {
         return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
     }
 
@@ -560,6 +666,7 @@ public abstract class PixelGameEngine {
                 @Override
                 public void keyPressed(KeyEvent keyEvent) {
                     engine.b_keys[keyEvent.getKeyCode()] = true;
+                    engine.lastKey = keyEvent.getKeyChar();
                 }
                 public void keyReleased(KeyEvent keyEvent) {
                     engine.b_keys[keyEvent.getKeyCode()] = false;
@@ -626,13 +733,13 @@ public abstract class PixelGameEngine {
             }
 
             engine.g = (Graphics2D) bs.getDrawGraphics();
-            g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
             g.scale(engine.scaleX, engine.scaleY);
-            g.setFont(new Font("Consolas",1,8));
+            g.setFont(engine.engineFont);
             if (!engine.OnUserUpdate((float)delta)) {
                 engine.OnUserDestroy();
                 stop();
             }
+
             g.dispose();
             bs.show();
         }
